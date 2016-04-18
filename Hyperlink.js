@@ -39,12 +39,12 @@ const Hyperlink = React.createClass({
       return component;
     }
     let elements = [];
-    let lastIndex = 0;
-    linkify.match(component.props.children).forEach(({index, text, url}) =>{
-      let nonLinkedText = component.props.children.substring(lastIndex, index);
+    let _lastIndex = 0;
+    linkify.match(component.props.children).forEach(({index, lastIndex, text, url}) =>{
+      let nonLinkedText = component.props.children.substring(_lastIndex, index);
       if (nonLinkedText){
         elements.push(nonLinkedText);
-        lastIndex = index;
+        _lastIndex = lastIndex;
       }
       elements.push(
         <Text {...component.props}
@@ -53,6 +53,7 @@ const Hyperlink = React.createClass({
               key={url}>{this.props.linkText || text}</Text>
       );
     });
+    elements.push(component.props.children.substring(_lastIndex, component.props.children.length));
     return React.cloneElement(component, component.props, elements);
   },
 
