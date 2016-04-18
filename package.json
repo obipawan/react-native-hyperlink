@@ -1,0 +1,23 @@
+{
+  "name": "hyperlink",
+  "version": "0.0.1",
+  "description": "A <Hyperlink /> component to make urls, fuzzy links, emails etc clickable",
+  "main": "Hyperlink.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "react-native",
+    "text",
+    "link",
+    "hyperlink",
+    "autolink",
+    "url"
+  ],
+  "author": "Pawan Kumar",
+  "license": "MIT",
+  "dependencies": {
+    "linkify-it": "^1.2.0"
+  }
+}
