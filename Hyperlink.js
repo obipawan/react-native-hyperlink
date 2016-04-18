@@ -44,8 +44,8 @@ const Hyperlink = React.createClass({
       let nonLinkedText = component.props.children.substring(_lastIndex, index);
       if (nonLinkedText){
         elements.push(nonLinkedText);
-        _lastIndex = lastIndex;
       }
+      _lastIndex = lastIndex;
       elements.push(
         <Text {...component.props}
               style={[component.props.style], [this.props.linkStyle]}
