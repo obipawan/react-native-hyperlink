@@ -1,10 +1,14 @@
 {
   "name": "hyperlink",
   "version": "0.0.1",
-  "description": "A <Hyperlink /> component to make urls, fuzzy links, emails etc clickable",
+  "description": "A <Hyperlink /> component for react-native to make urls, fuzzy links, emails etc clickable",
   "main": "Hyperlink.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/obipawan/hyperlink.git"
   },
   "keywords": [
     "react",
@@ -17,6 +21,10 @@
   ],
   "author": "Pawan Kumar",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/obipawan/hyperlink/issues"
+  },
+  "homepage": "https://github.com/obipawan/hyperlink#readme",
   "dependencies": {
     "linkify-it": "^1.2.0"
   }
