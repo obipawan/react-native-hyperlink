@@ -17,7 +17,7 @@ const Hyperlink = React.createClass({
 
   render(){
     return (
-      <View style={this.props.style}>
+      <View {...this.props} style={this.props.style}>
         {(!this.props.onPress && !this.props.linkStyle) ? this.props.children : this.parse(this).props.children}
       </View>
     );
@@ -49,7 +49,7 @@ const Hyperlink = React.createClass({
       elements.push(
         <Text {...component.props}
               style={[component.props.style], [this.props.linkStyle]}
-              onPress={() => this.props.onPress(url)}
+              onPress={() => {(this.props.onPress) ? this.props.onPress(url) : {}}}
               key={url}>{this.props.linkText || text}</Text>
       );
     });
