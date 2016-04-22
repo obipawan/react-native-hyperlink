@@ -1,6 +1,6 @@
 {
   "name": "react-native-hyperlink",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A <Hyperlink /> component for react-native to make urls, fuzzy links, emails etc clickable",
   "main": "Hyperlink.js",
   "scripts": {
