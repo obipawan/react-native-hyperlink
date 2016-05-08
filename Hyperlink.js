@@ -35,7 +35,7 @@ const Hyperlink = React.createClass({
   },
 
   linkify(component){
-    if (!linkify.pretest(component.props.children)){
+    if (!linkify.pretest(component.props.children) || !linkify.test(component.props.children)) {
       return component;
     }
     let elements = [];
