@@ -12,7 +12,10 @@ const Hyperlink = React.createClass({
   propTypes: {
     onPress: React.PropTypes.func,
     linkStyle: Text.propTypes.style,
-    linkText: React.PropTypes.string
+    linkText: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.func
+    ])
   },
 
   render(){
@@ -48,13 +51,14 @@ const Hyperlink = React.createClass({
           elements.push(nonLinkedText);
         }
         _lastIndex = lastIndex;
+        if (this.props.linkText){
+          text = (typeof this.props.linkText === 'function') ? this.props.linkText(url) : this.props.linkText;
+        }
         elements.push(
           <Text {...component.props}
             style={[component.props.style], [this.props.linkStyle]}
-              onPress={() => {
-            (this.props.onPress) ? this.props.onPress(url) : {}
-          }}
-            key={url}>{this.props.linkText || text}</Text>
+              onPress={() => this.props.onPress && this.props.onPress(url)}
+            key={url}>{text}</Text>
         );
       });
       elements.push(component.props.children.substring(_lastIndex, component.props.children.length));
