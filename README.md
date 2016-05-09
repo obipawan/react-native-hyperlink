@@ -58,7 +58,7 @@ module.exports = React.createClass({
 });
 ```
 
-  - Use the `linkText` prop to change the visible text
+  - Use the `linkText` prop to change the visible text (`func` or `string`)
 ```javascript
 module.exports = React.createClass({
     render(){
