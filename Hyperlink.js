@@ -74,10 +74,16 @@ const Hyperlink = React.createClass({
       return component;
     }
 
-    return React.cloneElement(component, component.props, React.Children.map(children, (child) => {
+    const componentProps = {
+      ...component.props,
+      ref: undefined,
+      key: undefined,
+    }
+
+    return React.cloneElement(component, componentProps, React.Children.map(children, (child) => {
       let {type : {displayName} = {}} = child;
       if (typeof child === 'string' && linkify.pretest(child)){
-        return this.linkify(<Text {...component.props} style={component.props.style}>{child}</Text>);
+        return this.linkify(<Text {...componentProps} style={component.props.style}>{child}</Text>);
       }
       if (displayName === 'Text' && !this.isTextNested(child)){
         return this.linkify(child);
