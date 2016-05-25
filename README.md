@@ -63,7 +63,7 @@ module.exports = React.createClass({
 module.exports = React.createClass({
     render(){
         <Hyperlink linkStyle={{color:'#2980b9', fontSize:20}}
-                    linkText={'hyperlink'}>
+                    linkText={(url) =>{return url === 'https://github.com/obipawan/hyperlink' ? 'Hyperlink' : url}}>
             <Text style={{fontSize:15}}>
                 Make clickable strings cleaner with https://github.com/obipawan/hyperlink
             </Text>
