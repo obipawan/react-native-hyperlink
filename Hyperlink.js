@@ -44,6 +44,12 @@ const Hyperlink = React.createClass({
     let elements = [];
     let _lastIndex = 0;
 
+    const componentProps = {
+      ...component.props,
+      ref: undefined,
+      key: undefined,
+    }
+
     try {
       linkify.match(component.props.children).forEach(({index, lastIndex, text, url}) => {
         let nonLinkedText = component.props.children.substring(_lastIndex, index);
@@ -54,15 +60,16 @@ const Hyperlink = React.createClass({
         if (this.props.linkText){
           text = (typeof this.props.linkText === 'function') ? this.props.linkText(url) : this.props.linkText;
         }
+
         elements.push(
-          <Text {...component.props}
+          <Text {...componentProps}
             style={[component.props.style], [this.props.linkStyle]}
-              onPress={() => this.props.onPress && this.props.onPress(url)}
+            onPress={() => this.props.onPress && this.props.onPress(url)}
             key={url}>{text}</Text>
         );
       });
       elements.push(component.props.children.substring(_lastIndex, component.props.children.length));
-      return React.cloneElement(component, component.props, elements);
+      return React.cloneElement(component, componentProps, elements);
     } catch (err) {
       return component;
     }
