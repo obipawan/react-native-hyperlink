@@ -25,7 +25,7 @@ class Hyperlink extends Component {
 	isTextNested(component){
 		if (!React.isValidElement(component))
 			throw 'Invalid component'
-		let {type : {displayName} = {}} = component
+		let { type : { displayName } = {} } = component
 		if (displayName !== 'Text')
 			throw 'Not a Text component'
 		return typeof component.props.children !== 'string'
@@ -71,7 +71,7 @@ class Hyperlink extends Component {
 	}
 
 	parse(component){
-		let {props: {children} = {}, type: {displayName} = {}} = component
+		let { props: { children} = {}, type: { displayName } = {} } = component
 		if (!children)
 			return component
 
@@ -81,7 +81,7 @@ class Hyperlink extends Component {
 			key: undefined,
 		}
 
-		return React.cloneElement(component, componentProps, React.Children.map(children, (child) => {
+		return React.cloneElement(component, componentProps, React.Children.map(children, child => {
 			let { type : { displayName } = {} } = child
 			if (typeof child === 'string' && linkify.pretest(child))
 				return this.linkify(<Text { ...componentProps } style={component.props.style}>{ child }</Text>)
