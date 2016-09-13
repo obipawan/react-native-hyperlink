@@ -4,13 +4,13 @@
 
 import React, { Component, PropTypes } from 'react'
 import { View, Text } from 'react-native'
-const linkify = require('linkify-it')()
 
 class Hyperlink extends Component {
 	constructor(props){
 		super(props)
 		this.linkify = this.linkify.bind(this)
 		this.parse = this.parse.bind(this)
+		this.linkifyIt = props.linkify || require('linkify-it')()
 	}
 
 	render(){
@@ -32,7 +32,7 @@ class Hyperlink extends Component {
 	}
 
 	linkify(component){
-		if (!linkify.pretest(component.props.children) || !linkify.test(component.props.children)) {
+		if (!this.linkifyIt.pretest(component.props.children) || !this.linkifyIt.test(component.props.children)) {
 			return component
 		}
 		let elements = []
@@ -45,7 +45,7 @@ class Hyperlink extends Component {
 		}
 
 		try {
-			linkify.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
+			this.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
 				let nonLinkedText = component.props.children.substring(_lastIndex, index)
 				nonLinkedText && elements.push(nonLinkedText)
 				_lastIndex = lastIndex
@@ -83,7 +83,7 @@ class Hyperlink extends Component {
 
 		return React.cloneElement(component, componentProps, React.Children.map(children, child => {
 			let { type : { displayName } = {} } = child
-			if (typeof child === 'string' && linkify.pretest(child))
+			if (typeof child === 'string' && this.linkifyIt.pretest(child))
 				return this.linkify(<Text { ...componentProps } style={component.props.style}>{ child }</Text>)
 			if (displayName === 'Text' && !this.isTextNested(child))
 				return this.linkify(child)
@@ -93,6 +93,7 @@ class Hyperlink extends Component {
 }
 
 Hyperlink.propTypes = {
+	linkify: PropTypes.object,
 	linkStyle: Text.propTypes.style,
 	linkText: PropTypes.oneOfType([
 		PropTypes.string,
