@@ -55,7 +55,7 @@ class Hyperlink extends Component {
 				elements.push(
 					<Text
 						{ ...componentProps }
-						key={ url }
+						key={ url + index }
 						style={ [ component.props.style, this.props.linkStyle ] }
 						onPress={ () => this.props.onPress && this.props.onPress(url) }
 					>
