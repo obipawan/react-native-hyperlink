@@ -7,70 +7,57 @@ A `<Hyperlink />` component for react-native that makes urls, fuzzy links, email
 
 ## Installation
 ```sh
-npm install --save react-native-hyperlink
+npm i --save react-native-hyperlink
 ```
 
-## Usage
- - To make a `<Text />` component **linkable**, first import the component
-```javascript
-import Hyperlink from 'react-native-hyperlink';
-```
+## Props
+| name | desc | type | default
+| --- | --- | --- | --- |
+| `linkify` | [linkify-it](https://facebook.github.io/react-native/docs/view.html#style) object, for custom schema  | `object` | `require('linkify-it')()`
+| `linkStyle` | highlight clickable text with styles | `Text.propTypes.style` |
+| `linkText` | A string or a func to replace parsed text | `oneOfType([ string, func ])` |
+| `onPress` | func to handle clickable text with parsed text as arg | `func` |
 
-and nest your `<Text />` as a child.
-
-```javascript
-module.exports = React.createClass({
-    render(){
-        <Hyperlink onPress={(url) => alert(url)}>
-            <Text style={{fontSize:15}}>
-                This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable.
-            </Text>
-        </Hyperlink>
-    }
-});
-```
-  - You can also wrap `<Hyperlink />` around [nested ](https://facebook.github.io/react-native/docs/text.html#nested-text) `<Text />` and any views with `<Text />`
-```javascript
-    module.exports = React.createClass({
-    render(){
-        <Hyperlink onPress={(url) => alert(url)}>
-            <View>
-                <Text style={{fontSize:15}}>
-                A nested Text component https://facebook.github.io/react-native/docs/text.html works equally well <Text>with https://github.com/obipawan/hyperlink</Text>
-                </Text>
-            </View>
-        </Hyperlink>
-    }
-});
-```
-
-  - To highlight clickable links, specify `linkStyle` prop
+## Examples
+Wrap any component that has `<Text>` (works for [nested ](https://facebook.github.io/react-native/docs/text.html#nested-text) text too) in it
 
 ```javascript
-module.exports = React.createClass({
-    render(){
-        <Hyperlink linkStyle={{color:'#2980b9', fontSize:20}}>
-            <Text style={{fontSize:15}}>
-                Make clickable strings like https://github.com/obipawan/hyperlink stylable
-            </Text>
-        </Hyperlink>
-    }
-});
+import Hyperlink from 'react-native-hyperlink'
+
+export const regularText = () =>
+  <Hyperlink onPress={ url => alert(url) }>
+    <Text style={ { fontSize: 15 } }>
+      This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable.
+    </Text>
+  </Hyperlink>
+
+export const nestedText = () =>
+  <Hyperlink onPress={ url => alert(url) }>
+    <View>
+      <Text style={ { fontSize: 15 } }>
+        A nested Text component https://facebook.github.io/react-native/docs/text.html works equally well <Text>with https://github.com/obipawan/hyperlink</Text>
+      </Text>
+    </View>
+  </Hyperlink>
+
+export const highlightText = () =>
+  <Hyperlink linkStyle={ { color: '#2980b9', fontSize: 20 } }>
+    <Text style={ { fontSize: 15 } }>
+      Make clickable strings like https://github.com/obipawan/hyperlink stylable
+    </Text>
+  </Hyperlink>
+
+export const parseAndReplace = () =>
+  <Hyperlink
+    linkStyle={ { color: '#2980b9', fontSize: 20 } }
+    linkText={ url => url === 'https://github.com/obipawan/hyperlink' ? 'Hyperlink' : url }
+  >
+    <Text style={ { fontSize: 15 } }>
+      Make clickable strings cleaner with https://github.com/obipawan/hyperlink
+    </Text>
+  </Hyperlink>
 ```
 
-  - Use the `linkText` prop to change the visible text (`func` or `string`)
-```javascript
-module.exports = React.createClass({
-    render(){
-        <Hyperlink linkStyle={{color:'#2980b9', fontSize:20}}
-                    linkText={(url) =>{return url === 'https://github.com/obipawan/hyperlink' ? 'Hyperlink' : url}}>
-            <Text style={{fontSize:15}}>
-                Make clickable strings cleaner with https://github.com/obipawan/hyperlink
-            </Text>
-        </Hyperlink>
-    }
-});
-```
 ### Dependenies
  [linkify-it](https://github.com/markdown-it/linkify-it)
 ### Development
