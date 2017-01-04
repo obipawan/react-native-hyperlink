@@ -18,7 +18,7 @@ class Hyperlink extends Component {
 			{ ...this.props }
 			style={ this.props.style }
 		>
-			{ !this.props.onPress && !this.props.linkStyle ? this.props.children : this.parse(this).props.children }
+			{ !this.props.onPress && !this.props.onLongPress && !this.props.linkStyle ? this.props.children : this.parse(this).props.children }
 		</View>
 	}
 
@@ -58,6 +58,7 @@ class Hyperlink extends Component {
 						key={ url + index }
 						style={ [ component.props.style, this.props.linkStyle ] }
 						onPress={ () => this.props.onPress && this.props.onPress(url) }
+						onLongPress={ () => this.props.onLongPress && this.props.onLongPress(url) }
 					>
 						{ text }
 					</Text>
@@ -100,6 +101,7 @@ Hyperlink.propTypes = {
 		PropTypes.func,
 	]),
 	onPress: React.PropTypes.func,
+	onLongPress: React.PropTypes.func,
 }
 
 module.exports = Hyperlink

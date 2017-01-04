@@ -16,7 +16,8 @@ npm i --save react-native-hyperlink
 | `linkify` | [linkify-it](https://facebook.github.io/react-native/docs/view.html#style) object, for custom schema  | `object` | `require('linkify-it')()`
 | `linkStyle` | highlight clickable text with styles | `Text.propTypes.style` |
 | `linkText` | A string or a func to replace parsed text | `oneOfType([ string, func ])` |
-| `onPress` | func to handle clickable text with parsed text as arg | `func` |
+| `onPress` | func to handle click over a clickable text with parsed text as arg | `func` |
+| `onLongPress` | func to handle long click over a clickable text with parsed text as arg | `func` |
 
 ## Examples
 Wrap any component that has `<Text>` (works for [nested ](https://facebook.github.io/react-native/docs/text.html#nested-text) text too) in it
@@ -28,6 +29,13 @@ export const regularText = () =>
   <Hyperlink onPress={ url => alert(url) }>
     <Text style={ { fontSize: 15 } }>
       This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable.
+    </Text>
+  </Hyperlink>
+  
+export const regularTextLongPress = () =>
+  <Hyperlink onLongPress={ url => alert(url) }>
+    <Text style={ { fontSize: 15 } }>
+      This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable for long click.
     </Text>
   </Hyperlink>
 
