@@ -15,6 +15,10 @@ class Hyperlink extends Component {
 		this.linkifyIt = props.linkify || require('linkify-it')()
 	}
 
+	componentWillReceiveProps ({ linkify = require('linkify-it')() } = {}) {
+		this.linkifyIt = linkify
+	}
+
 	render(){
 		return <View
 			{ ...this.props }
