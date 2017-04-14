@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react'
 import { View, Text } from 'react-native'
 
-const textPropTypes = Text.propTypes || {};
+const textPropTypes = Text.propTypes || {}
 
 class Hyperlink extends Component {
 	constructor(props){
@@ -20,7 +20,11 @@ class Hyperlink extends Component {
 			{ ...this.props }
 			style={ this.props.style }
 		>
-			{ !this.props.onPress && !this.props.onLongPress && !this.props.linkStyle ? this.props.children : this.parse(this).props.children }
+			{
+				!this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
+					? this.props.children
+					: this.parse(this).props.children
+			}
 		</View>
 	}
 
@@ -34,9 +38,12 @@ class Hyperlink extends Component {
 	}
 
 	linkify(component){
-		if (!this.linkifyIt.pretest(component.props.children) || !this.linkifyIt.test(component.props.children)) {
+		if (
+			!this.linkifyIt.pretest(component.props.children)
+			|| !this.linkifyIt.test(component.props.children)
+		)
 			return component
-		}
+
 		let elements = []
 		let _lastIndex = 0
 
@@ -52,7 +59,9 @@ class Hyperlink extends Component {
 				nonLinkedText && elements.push(nonLinkedText)
 				_lastIndex = lastIndex
 				if (this.props.linkText)
-					text = typeof this.props.linkText === 'function' ? this.props.linkText(url) : this.props.linkText
+					text = typeof this.props.linkText === 'function'
+						? this.props.linkText(url)
+						: this.props.linkText
 
 				elements.push(
 					<Text
@@ -73,7 +82,7 @@ class Hyperlink extends Component {
 		}
 	}
 
-	parse(component){
+	parse (component) {
 		let { props: { children} = {}, type: { displayName } = {} } = component
 		if (!children)
 			return component
@@ -87,7 +96,7 @@ class Hyperlink extends Component {
 		return React.cloneElement(component, componentProps, React.Children.map(children, child => {
 			let { type : { displayName } = {} } = child
 			if (typeof child === 'string' && this.linkifyIt.pretest(child))
-				return this.linkify(<Text { ...componentProps } style={component.props.style}>{ child }</Text>)
+				return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
 			if (displayName === 'Text' && !this.isTextNested(child))
 				return this.linkify(child)
 			return this.parse(child)
