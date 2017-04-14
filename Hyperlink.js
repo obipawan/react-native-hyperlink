@@ -5,6 +5,8 @@
 import React, { Component, PropTypes } from 'react'
 import { View, Text } from 'react-native'
 
+const textPropTypes = Text.propTypes || {};
+
 class Hyperlink extends Component {
 	constructor(props){
 		super(props)
@@ -95,13 +97,13 @@ class Hyperlink extends Component {
 
 Hyperlink.propTypes = {
 	linkify: PropTypes.object,
-	linkStyle: Text.propTypes.style,
+	linkStyle: textPropTypes.style,
 	linkText: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
 	]),
-	onPress: React.PropTypes.func,
-	onLongPress: React.PropTypes.func,
+	onPress: PropTypes.func,
+	onLongPress: PropTypes.func,
 }
 
 module.exports = Hyperlink
