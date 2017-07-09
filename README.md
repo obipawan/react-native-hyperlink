@@ -18,6 +18,7 @@ npm i --save react-native-hyperlink
 | `linkText` | A string or a func to replace parsed text | `oneOfType([ string, func ])` |
 | `onPress` | func to handle click over a clickable text with parsed text as arg | `func` |
 | `onLongPress` | func to handle long click over a clickable text with parsed text as arg | `func` |
+|`linkDefault`|A platform specific fallback to handle `onPress`. Uses [Linking](https://facebook.github.io/react-native/docs/linking.html). Disabled by default | `bool`
 
 ## Examples
 Wrap any component that has `<Text>` (works for [nested ](https://facebook.github.io/react-native/docs/text.html#nested-text) text too) in it
@@ -25,13 +26,20 @@ Wrap any component that has `<Text>` (works for [nested ](https://facebook.githu
 ```javascript
 import Hyperlink from 'react-native-hyperlink'
 
+export const defaultLink = () =>
+  <Hyperlink linkDefault={ true }>
+    <Text style={ { fontSize: 15 } }>
+      This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable.
+    </Text>
+  </Hyperlink>
+
 export const regularText = () =>
   <Hyperlink onPress={ url => alert(url) }>
     <Text style={ { fontSize: 15 } }>
       This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable.
     </Text>
   </Hyperlink>
-  
+
 export const regularTextLongPress = () =>
   <Hyperlink onLongPress={ url => alert(url) }>
     <Text style={ { fontSize: 15 } }>

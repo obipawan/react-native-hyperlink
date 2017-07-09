@@ -3,7 +3,11 @@
 **/
 
 import React, { Component, PropTypes } from 'react'
-import { View, Text } from 'react-native'
+import {
+	View,
+	Text,
+	Linking,
+} from 'react-native'
 
 const textPropTypes = Text.propTypes || {}
 
@@ -109,6 +113,7 @@ class Hyperlink extends Component {
 }
 
 Hyperlink.propTypes = {
+	linkDefault: PropTypes.bool,
 	linkify: PropTypes.object,
 	linkStyle: textPropTypes.style,
 	linkText: PropTypes.oneOfType([
@@ -119,4 +124,21 @@ Hyperlink.propTypes = {
 	onLongPress: PropTypes.func,
 }
 
-module.exports = Hyperlink
+export default class extends Component {
+	constructor (props) {
+		super(props)
+		this.handleLink = this.handleLink.bind(this)
+	}
+
+	handleLink (url) {
+		Linking.canOpenURL(url)
+			.then(supported => supported && Linking.openURL(url))
+	}
+
+	render () {
+		const onPress = this.handleLink || this.props.onPress
+		if (this.props.linkDefault)
+			return <Hyperlink { ...this.props } onPress={ onPress }/>
+		return <Hyperlink { ...this.props } />
+	}
+}
