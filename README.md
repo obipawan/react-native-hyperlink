@@ -34,21 +34,21 @@ export const defaultLink = () =>
   </Hyperlink>
 
 export const regularText = () =>
-  <Hyperlink onPress={ url => alert(url) }>
+  <Hyperlink onPress={ (url, text) => alert(url + ", " + text) }>
     <Text style={ { fontSize: 15 } }>
       This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable.
     </Text>
   </Hyperlink>
 
 export const regularTextLongPress = () =>
-  <Hyperlink onLongPress={ url => alert(url) }>
+  <Hyperlink onLongPress={ (url, text) => alert(url + ", " + text) }>
     <Text style={ { fontSize: 15 } }>
       This text will be parsed to check for clickable strings like https://github.com/obipawan/hyperlink and made clickable for long click.
     </Text>
   </Hyperlink>
 
 export const nestedText = () =>
-  <Hyperlink onPress={ url => alert(url) }>
+  <Hyperlink onPress={ (url, text) => alert(url + ", " + text) }>
     <View>
       <Text style={ { fontSize: 15 } }>
         A nested Text component https://facebook.github.io/react-native/docs/text.html works equally well <Text>with https://github.com/obipawan/hyperlink</Text>
