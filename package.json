@@ -2,10 +2,10 @@
   "name": "react-native-hyperlink",
   "version": "0.0.11",
   "description": "A <Hyperlink /> component for react-native to make urls, fuzzy links, emails etc clickable",
-  "main": "Hyperlink.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel --presets=es2015,react --plugins=transform-object-rest-spread Hyperlink.js --out-file dist/index.js"
+    "build": "babel --presets=es2015,react --plugins=transform-object-rest-spread src/Hyperlink.js --out-file dist/index.js"
   },
   "repository": {
     "type": "git",
