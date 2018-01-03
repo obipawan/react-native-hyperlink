@@ -63,6 +63,8 @@ var Hyperlink = function (_Component) {
 
       delete viewProps.onPress;
       delete viewProps.linkDefault;
+      delete viewProps.onLongPress;
+      delete viewProps.linkStyle;
 
       return _react2.default.createElement(
         _reactNative.View,

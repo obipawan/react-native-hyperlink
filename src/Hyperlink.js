@@ -30,7 +30,9 @@ class Hyperlink extends Component {
     const { ...viewProps } = this.props
     delete viewProps.onPress
     delete viewProps.linkDefault
-
+	delete viewProps.onLongPress
+	delete viewProps.linkStyle
+		
     return (
       <View {...viewProps} style={this.props.style}>
         {!this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
