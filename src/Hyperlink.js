@@ -4,142 +4,148 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-	View,
-	Text,
-	Linking,
+import { 
+	View, 
+	Text, 
+	Linking, 
+	Platform
 } from 'react-native'
 
 const textPropTypes = Text.propTypes || {}
+const { OS } = Platform
 
 class Hyperlink extends Component {
-	constructor(props){
-		super(props)
-		this.linkify = this.linkify.bind(this)
-		this.parse = this.parse.bind(this)
-		this.linkifyIt = props.linkify || require('linkify-it')()
-	}
+  constructor(props){
+    super(props)
+    this.linkify = this.linkify.bind(this)
+    this.parse = this.parse.bind(this)
+    this.linkifyIt = props.linkify || require('linkify-it')()
+  }
 
-	componentWillReceiveProps ({ linkify = require('linkify-it')() } = {}) {
-		this.linkifyIt = linkify
-	}
+  componentWillReceiveProps ({ linkify = require('linkify-it')() } = {}) {
+    this.linkifyIt = linkify
+  }
 
-	render(){
-		return <View
-			{ ...this.props }
-			style={ this.props.style }
-		>
-			{
-				!this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
-					? this.props.children
-					: this.parse(this).props.children
-			}
-		</View>
-	}
+  render() {
+    const { ...viewProps } = this.props
+    delete viewProps.onPress
+    delete viewProps.linkDefault
 
-	isTextNested(component){
-		if (!React.isValidElement(component))
-			throw 'Invalid component'
-		let { type : { displayName } = {} } = component
-		if (displayName !== 'Text')
-			throw 'Not a Text component'
-		return typeof component.props.children !== 'string'
-	}
+    return (
+      <View {...viewProps} style={this.props.style}>
+        {!this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
+          ? this.props.children
+          : this.parse(this).props.children}
+      </View>
+    )
+  }
 
-	linkify(component){
-		if (
-			!this.linkifyIt.pretest(component.props.children)
-			|| !this.linkifyIt.test(component.props.children)
-		)
-			return component
+  isTextNested(component) {
+	if (!React.isValidElement(component)) 
+		throw new Error('Invalid component')
+    let { type: { displayName } = {} } = component
+	if (displayName !== 'Text') 
+		throw new Error('Not a Text component')
+    return typeof component.props.children !== 'string'
+  }
 
-		let elements = []
-		let _lastIndex = 0
+  linkify(component){
+    if (
+	  !this.linkifyIt.pretest(component.props.children)
+	  || !this.linkifyIt.test(component.props.children)
+    )
+      return component
 
-		const componentProps = {
-			...component.props,
-			ref: undefined,
-			key: undefined,
-		}
+    let elements = []
+    let _lastIndex = 0
 
-		try {
-			this.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
-				let nonLinkedText = component.props.children.substring(_lastIndex, index)
-				nonLinkedText && elements.push(nonLinkedText)
-				_lastIndex = lastIndex
-				if (this.props.linkText)
-					text = typeof this.props.linkText === 'function'
-						? this.props.linkText(url)
-						: this.props.linkText
+    const componentProps = {
+      ...component.props,
+      ref: undefined,
+      key: undefined,
+    }
 
-				elements.push(
-					<Text
-						{ ...componentProps }
-						key={ url + index }
-						style={ [ component.props.style, this.props.linkStyle ] }
-						onPress={ () => this.props.onPress && this.props.onPress(url) }
-						onLongPress={ () => this.props.onLongPress && this.props.onLongPress(url) }
-					>
-						{ text }
-					</Text>
-				)
-			})
-			elements.push(component.props.children.substring(_lastIndex, component.props.children.length))
-			return React.cloneElement(component, componentProps, elements)
-		} catch (err) {
-			return component
-		}
-	}
+    try {
+      this.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
+        let nonLinkedText = component.props.children.substring(_lastIndex, index)
+        nonLinkedText && elements.push(nonLinkedText)
+        _lastIndex = lastIndex
+        if (this.props.linkText)
+          text = typeof this.props.linkText === 'function'
+              ? this.props.linkText(url)
+              : this.props.linkText
 
-	parse (component) {
-		let { props: { children} = {}, type: { displayName } = {} } = component
-		if (!children)
-			return component
+        if (OS !== 'web') {
+          componentProps.onLongPress = () => this.props.onLongPress && this.props.onLongPress(url)
+        }
 
-		const componentProps = {
-			...component.props,
-			ref: undefined,
-			key: undefined,
-		}
+        elements.push(
+          <Text
+            { ...componentProps }
+            key={ url + index }
+            style={ [ component.props.style, this.props.linkStyle ] }
+            onPress={ () => this.props.onPress && this.props.onPress(url) }
+          >
+            { text }
+          </Text>
+        )
+      })
+      elements.push(component.props.children.substring(_lastIndex, component.props.children.length))
+      return React.cloneElement(component, componentProps, elements)
+    } catch (err) {
+      return component
+    }
+  }
 
-		return React.cloneElement(component, componentProps, React.Children.map(children, child => {
-			let { type : { displayName } = {} } = child
-			if (typeof child === 'string' && this.linkifyIt.pretest(child))
+  parse (component) {
+    let { props: { children} = {}, type: { displayName } = {} } = component
+	if (!children)
+		return component
+
+    const componentProps = {
+      ...component.props,
+      ref: undefined,
+      key: undefined,
+    }
+
+    return React.cloneElement(component, componentProps, React.Children.map(children, child => {
+        let { type : { displayName } = {} } = child
+        if (typeof child === 'string' && this.linkifyIt.pretest(child))
 				return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
-			if (displayName === 'Text' && !this.isTextNested(child))
-				return this.linkify(child)
-			return this.parse(child)
-		}))
-	}
+		if (displayName === 'Text' && !this.isTextNested(child))
+			return this.linkify(child)
+		return this.parse(child)
+      }))
+  }
 }
 
 Hyperlink.propTypes = {
-	linkDefault: PropTypes.bool,
-	linkify: PropTypes.object,
-	linkStyle: textPropTypes.style,
-	linkText: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-	]),
-	onPress: PropTypes.func,
-	onLongPress: PropTypes.func,
+  linkDefault: PropTypes.bool,
+  linkify: PropTypes.object,
+  linkStyle: textPropTypes.style,
+  linkText: PropTypes.oneOfType([
+	PropTypes.string,
+	PropTypes.func,
+  ]),
+  onPress: PropTypes.func,
+  onLongPress: PropTypes.func,
 }
 
 export default class extends Component {
-	constructor (props) {
-		super(props)
-		this.handleLink = this.handleLink.bind(this)
-	}
+  constructor (props) {
+    super(props)
+    this.handleLink = this.handleLink.bind(this)
+  }
 
-	handleLink (url) {
-		Linking.canOpenURL(url)
-			.then(supported => supported && Linking.openURL(url))
-	}
+  handleLink (url) {
+	Linking.canOpenURL(url)
+		.then(supported => supported && Linking.openURL(url))
+  }
 
-	render () {
-		const onPress = this.handleLink || this.props.onPress
-		if (this.props.linkDefault)
-			return <Hyperlink { ...this.props } onPress={ onPress }/>
-		return <Hyperlink { ...this.props } />
-	}
+  render () {
+    const onPress = this.handleLink || this.props.onPress
+	if (this.props.linkDefault) 
+		return <Hyperlink { ...this.props } onPress={ onPress }/>
+    return <Hyperlink { ...this.props } />
+  }
 }
