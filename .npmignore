@@ -1,1 +1,6 @@
 asset
+node_modules
+.git
+.npmignore
+package-lock.json
+.gitignore
