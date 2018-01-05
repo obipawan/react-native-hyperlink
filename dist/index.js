@@ -112,7 +112,7 @@ var Hyperlink = function (_Component) {
 
           if (OS !== 'web') {
             componentProps.onLongPress = function () {
-              return _this2.props.onLongPress && _this2.props.onLongPress(url);
+              return _this2.props.onLongPress && _this2.props.onLongPress(url, text);
             };
           }
 
@@ -122,7 +122,7 @@ var Hyperlink = function (_Component) {
               key: url + index,
               style: [component.props.style, _this2.props.linkStyle],
               onPress: function onPress() {
-                return _this2.props.onPress && _this2.props.onPress(url);
+                return _this2.props.onPress && _this2.props.onPress(url, text);
               }
             }),
             text

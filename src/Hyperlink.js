@@ -30,31 +30,31 @@ class Hyperlink extends Component {
     const { ...viewProps } = this.props
     delete viewProps.onPress
     delete viewProps.linkDefault
-	delete viewProps.onLongPress
-	delete viewProps.linkStyle
+    delete viewProps.onLongPress
+    delete viewProps.linkStyle
 		
     return (
-      <View {...viewProps} style={this.props.style}>
-        {!this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
+      <View { ...viewProps } style={ this.props.style }>
+        { !this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
           ? this.props.children
-          : this.parse(this).props.children}
+          : this.parse(this).props.children }
       </View>
     )
   }
 
   isTextNested(component) {
-	if (!React.isValidElement(component)) 
-		throw new Error('Invalid component')
+    if (!React.isValidElement(component)) 
+      throw new Error('Invalid component')
     let { type: { displayName } = {} } = component
-	if (displayName !== 'Text') 
-		throw new Error('Not a Text component')
+    if (displayName !== 'Text') 
+      throw new Error('Not a Text component')
     return typeof component.props.children !== 'string'
   }
 
   linkify(component){
     if (
-	  !this.linkifyIt.pretest(component.props.children)
-	  || !this.linkifyIt.test(component.props.children)
+      !this.linkifyIt.pretest(component.props.children)
+      || !this.linkifyIt.test(component.props.children)
     )
       return component
 
@@ -78,7 +78,7 @@ class Hyperlink extends Component {
               : this.props.linkText
 
         if (OS !== 'web') {
-          componentProps.onLongPress = () => this.props.onLongPress && this.props.onLongPress(url)
+          componentProps.onLongPress = () => this.props.onLongPress && this.props.onLongPress(url, text)
         }
 
         elements.push(
@@ -86,7 +86,7 @@ class Hyperlink extends Component {
             { ...componentProps }
             key={ url + index }
             style={ [ component.props.style, this.props.linkStyle ] }
-            onPress={ () => this.props.onPress && this.props.onPress(url) }
+            onPress={ () => this.props.onPress && this.props.onPress(url, text) }
           >
             { text }
           </Text>
@@ -101,8 +101,8 @@ class Hyperlink extends Component {
 
   parse (component) {
     let { props: { children} = {}, type: { displayName } = {} } = component
-	if (!children)
-		return component
+    if (!children)
+      return component
 
     const componentProps = {
       ...component.props,
@@ -111,13 +111,13 @@ class Hyperlink extends Component {
     }
 
     return React.cloneElement(component, componentProps, React.Children.map(children, child => {
-        let { type : { displayName } = {} } = child
-        if (typeof child === 'string' && this.linkifyIt.pretest(child))
-				return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
-		if (displayName === 'Text' && !this.isTextNested(child))
-			return this.linkify(child)
-		return this.parse(child)
-      }))
+      let { type : { displayName } = {} } = child
+      if (typeof child === 'string' && this.linkifyIt.pretest(child))
+        return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
+		  if (displayName === 'Text' && !this.isTextNested(child))
+			  return this.linkify(child)
+		  return this.parse(child)
+    }))
   }
 }
 
@@ -126,8 +126,8 @@ Hyperlink.propTypes = {
   linkify: PropTypes.object,
   linkStyle: textPropTypes.style,
   linkText: PropTypes.oneOfType([
-	PropTypes.string,
-	PropTypes.func,
+    PropTypes.string,
+    PropTypes.func,
   ]),
   onPress: PropTypes.func,
   onLongPress: PropTypes.func,
