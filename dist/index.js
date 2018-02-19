@@ -110,7 +110,7 @@ var Hyperlink = function (_Component) {
           _lastIndex = lastIndex;
           if (_this2.props.linkText) text = typeof _this2.props.linkText === 'function' ? _this2.props.linkText(url) : _this2.props.linkText;
 
-          if (OS !== 'web') {
+          if (OS !== 'web' && _this2.props.onLongPress) {
             componentProps.onLongPress = function () {
               return _this2.props.onLongPress && _this2.props.onLongPress(url, text);
             };
