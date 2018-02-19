@@ -30,7 +30,8 @@
   },
   "homepage": "https://github.com/obipawan/hyperlink#readme",
   "dependencies": {
-    "linkify-it": "^1.2.0"
+    "linkify-it": "^1.2.0",
+    "mdurl": "^1.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
