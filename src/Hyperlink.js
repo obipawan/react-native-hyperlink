@@ -10,6 +10,7 @@ import {
 	Linking, 
 	Platform
 } from 'react-native'
+import mdurl from 'mdurl';
 
 const textPropTypes = Text.propTypes || {}
 const { OS } = Platform
@@ -140,8 +141,12 @@ export default class extends Component {
   }
 
   handleLink (url) {
-	Linking.canOpenURL(url)
-		.then(supported => supported && Linking.openURL(url))
+    const urlObject = mdurl.parse(url);
+    urlObject.protocol = urlObject.protocol.toLowerCase();
+    const normalizedURL = mdurl.format(urlObject)
+
+    Linking.canOpenURL(normalizedURL)
+      .then(supported => supported && Linking.openURL(normalizedURL));
   }
 
   render () {

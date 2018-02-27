@@ -18,6 +18,10 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactNative = require('react-native');
 
+var _mdurl = require('mdurl');
+
+var _mdurl2 = _interopRequireDefault(_mdurl);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -196,8 +200,12 @@ var _class = function (_Component2) {
   _createClass(_class, [{
     key: 'handleLink',
     value: function handleLink(url) {
-      _reactNative.Linking.canOpenURL(url).then(function (supported) {
-        return supported && _reactNative.Linking.openURL(url);
+      var urlObject = _mdurl2.default.parse(url);
+      urlObject.protocol = urlObject.protocol.toLowerCase();
+      var normalizedURL = _mdurl2.default.format(urlObject);
+
+      _reactNative.Linking.canOpenURL(normalizedURL).then(function (supported) {
+        return supported && _reactNative.Linking.openURL(normalizedURL);
       });
     }
   }, {
