@@ -16,15 +16,22 @@ const textPropTypes = Text.propTypes || {}
 const { OS } = Platform
 
 class Hyperlink extends Component {
-  constructor(props){
-    super(props)
-    this.linkify = this.linkify.bind(this)
-    this.parse = this.parse.bind(this)
-    this.linkifyIt = props.linkify || require('linkify-it')()
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.linkify !== prevState.linkifyIt) {
+      return {
+        linkifyIt: nextProps.linkify
+      };
+    }
+
+    return null;
   }
 
-  componentWillReceiveProps ({ linkify = require('linkify-it')() } = {}) {
-    this.linkifyIt = linkify
+  constructor(props){
+    super(props)
+
+    this.state = {
+      linkifyIt: props.linkify || require('linkify-it')()
+    };
   }
 
   render() {
@@ -52,10 +59,10 @@ class Hyperlink extends Component {
     return typeof component.props.children !== 'string'
   }
 
-  linkify(component){
+  linkify = (component) => {
     if (
-      !this.linkifyIt.pretest(component.props.children)
-      || !this.linkifyIt.test(component.props.children)
+      !this.state.linkifyIt.pretest(component.props.children)
+      || !this.state.linkifyIt.test(component.props.children)
     )
       return component
 
@@ -69,7 +76,7 @@ class Hyperlink extends Component {
     }
 
     try {
-      this.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
+      this.state.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
         let nonLinkedText = component.props.children.substring(_lastIndex, index)
         nonLinkedText && elements.push(nonLinkedText)
         _lastIndex = lastIndex
@@ -106,7 +113,7 @@ class Hyperlink extends Component {
     }
   }
 
-  parse (component) {
+  parse = (component) => {
     let { props: { children} = {}, type: { displayName } = {} } = component
     if (!children)
       return component
@@ -119,7 +126,7 @@ class Hyperlink extends Component {
 
     return React.cloneElement(component, componentProps, React.Children.map(children, child => {
       let { type : { displayName } = {} } = child
-      if (typeof child === 'string' && this.linkifyIt.pretest(child))
+      if (typeof child === 'string' && this.state.linkifyIt.pretest(child))
         return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
 		  if (displayName === 'Text' && !this.isTextNested(child))
 			  return this.linkify(child)
