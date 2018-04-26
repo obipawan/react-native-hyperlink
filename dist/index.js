@@ -114,18 +114,19 @@ var Hyperlink = function (_Component) {
           _lastIndex = lastIndex;
           if (_this2.props.linkText) text = typeof _this2.props.linkText === 'function' ? _this2.props.linkText(url) : _this2.props.linkText;
 
+          var clickHandlerProps = {};
           if (OS !== 'web') {
-            componentProps.onLongPress = _this2.props.onLongPress ? function () {
+            clickHandlerProps.onLongPress = _this2.props.onLongPress ? function () {
               return _this2.props.onLongPress(url, text);
             } : undefined;
           }
-          componentProps.onPress = _this2.props.onPress ? function () {
+          clickHandlerProps.onPress = _this2.props.onPress ? function () {
             return _this2.props.onPress(url, text);
           } : undefined;
 
           elements.push(_react2.default.createElement(
             _reactNative.Text,
-            _extends({}, componentProps, {
+            _extends({}, componentProps, clickHandlerProps, {
               key: url + index,
               style: [component.props.style, _this2.props.linkStyle]
             }),
