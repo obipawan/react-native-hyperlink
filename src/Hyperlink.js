@@ -15,16 +15,14 @@ import mdurl from 'mdurl';
 const textPropTypes = Text.propTypes || {}
 const { OS } = Platform
 
+const DEFAULT_LINKIFY = require('linkify-it')();
+
 class Hyperlink extends Component {
   constructor(props){
     super(props)
     this.linkify = this.linkify.bind(this)
     this.parse = this.parse.bind(this)
-    this.linkifyIt = props.linkify || require('linkify-it')()
-  }
-
-  componentWillReceiveProps ({ linkify = require('linkify-it')() } = {}) {
-    this.linkifyIt = linkify
+    this.linkifyIt = props.linkify || DEFAULT_LINKIFY;
   }
 
   render() {
