@@ -23,7 +23,7 @@ npm i --save react-native-hyperlink
 ## Examples
 Wrap any component that has `<Text>` (works for [nested ](https://facebook.github.io/react-native/docs/text.html#nested-text) text too) in it
 
-```javascript
+```jsx
 import Hyperlink from 'react-native-hyperlink'
 
 export const defaultLink = () =>
