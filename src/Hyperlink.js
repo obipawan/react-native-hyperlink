@@ -114,7 +114,10 @@ class Hyperlink extends Component {
   }
 
   parse = (component) => {
-    let { props: { children} = {}, type: { displayName } = {} } = component
+    let {
+        props: { children } = {},
+        type: { displayName } = {},
+    } = component || {}
     if (!children)
       return component
 
@@ -125,7 +128,7 @@ class Hyperlink extends Component {
     }
 
     return React.cloneElement(component, componentProps, React.Children.map(children, child => {
-      let { type : { displayName } = {} } = child
+      let { type : { displayName } = {} } = child || {}
       if (typeof child === 'string' && this.state.linkifyIt.pretest(child))
         return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
 		  if (displayName === 'Text' && !this.isTextNested(child))

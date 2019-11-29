@@ -1,6 +1,6 @@
 {
   "name": "react-native-hyperlink",
-  "version": "0.0.14",
+  "version": "0.0.16",
   "description": "A <Hyperlink /> component for react-native to make urls, fuzzy links, emails etc clickable",
   "main": "dist/index.js",
   "scripts": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/obipawan/hyperlink#readme",
   "dependencies": {
-    "linkify-it": "^1.2.0",
+    "linkify-it": "^2.2.0",
     "mdurl": "^1.0.0"
   },
   "devDependencies": {
@@ -39,5 +39,6 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "husky": "^0.14.3"
-  }
+  },
+  "types": "index.d.ts"
 }

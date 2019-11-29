@@ -144,12 +144,14 @@ var Hyperlink = function (_Component) {
     value: function parse(component) {
       var _this3 = this;
 
-      var _component$props = component.props;
-      _component$props = _component$props === undefined ? {} : _component$props;
-      var children = _component$props.children,
-          _component$type2 = component.type;
-      _component$type2 = _component$type2 === undefined ? {} : _component$type2;
-      var displayName = _component$type2.displayName;
+      var _ref3 = component || {},
+          _ref3$props = _ref3.props;
+
+      _ref3$props = _ref3$props === undefined ? {} : _ref3$props;
+      var children = _ref3$props.children,
+          _ref3$type = _ref3.type;
+      _ref3$type = _ref3$type === undefined ? {} : _ref3$type;
+      var displayName = _ref3$type.displayName;
 
       if (!children) return component;
 
@@ -159,9 +161,11 @@ var Hyperlink = function (_Component) {
       });
 
       return _react2.default.cloneElement(component, componentProps, _react2.default.Children.map(children, function (child) {
-        var _child$type = child.type;
-        _child$type = _child$type === undefined ? {} : _child$type;
-        var displayName = _child$type.displayName;
+        var _ref4 = child || {},
+            _ref4$type = _ref4.type;
+
+        _ref4$type = _ref4$type === undefined ? {} : _ref4$type;
+        var displayName = _ref4$type.displayName;
 
         if (typeof child === 'string' && _this3.linkifyIt.pretest(child)) return _this3.linkify(_react2.default.createElement(
           _reactNative.Text,

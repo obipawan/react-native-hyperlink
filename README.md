@@ -13,7 +13,7 @@ npm i --save react-native-hyperlink
 ## Props
 | name | desc | type | default
 | --- | --- | --- | --- |
-| `linkify` | [linkify-it](https://facebook.github.io/react-native/docs/view.html#style) object, for custom schema  | `object` | `require('linkify-it')()`
+| `linkify` | [linkify-it](http://markdown-it.github.io/linkify-it/doc/) object, for custom schema  | `object` | `require('linkify-it')()`
 | `linkStyle` | highlight clickable text with styles | `Text.propTypes.style` |
 | `linkText` | A string or a func to replace parsed text | `oneOfType([ string, func ])` |
 | `onPress` | func to handle click over a clickable text with parsed text as arg | `func` |
@@ -23,7 +23,7 @@ npm i --save react-native-hyperlink
 ## Examples
 Wrap any component that has `<Text>` (works for [nested ](https://facebook.github.io/react-native/docs/text.html#nested-text) text too) in it
 
-```javascript
+```jsx
 import Hyperlink from 'react-native-hyperlink'
 
 export const defaultLink = () =>
