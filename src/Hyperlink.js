@@ -10,7 +10,7 @@ import {
 	Linking,
 	Platform
 } from 'react-native'
-import mdurl from 'mdurl';
+import mdurl from 'mdurl'
 
 const textPropTypes = Text.propTypes || {}
 const { OS } = Platform
@@ -23,7 +23,7 @@ class Hyperlink extends Component {
       };
     }
 
-    return null;
+    return null
   }
 
   constructor(props){
@@ -59,7 +59,7 @@ class Hyperlink extends Component {
     return typeof component.props.children !== 'string'
   }
 
-  linkify = (component) => {
+  linkify = component => {
     if (
       !this.state.linkifyIt.pretest(component.props.children)
       || !this.state.linkifyIt.test(component.props.children)
@@ -113,7 +113,7 @@ class Hyperlink extends Component {
     }
   }
 
-  parse = (component) => {
+  parse = component => {
     let {
         props: { children } = {},
         type: { displayName } = {},
