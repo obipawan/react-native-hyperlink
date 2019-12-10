@@ -19,7 +19,7 @@ class Hyperlink extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.linkify !== prevState.linkifyIt) {
       return {
-        linkifyIt: nextProps.linkify
+        linkifyIt: nextProps.linkify || require('linkify-it')(),
       };
     }
 
