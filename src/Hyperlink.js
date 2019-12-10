@@ -4,10 +4,10 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { 
-	View, 
-	Text, 
-	Linking, 
+import {
+	View,
+	Text,
+	Linking,
 	Platform
 } from 'react-native'
 import mdurl from 'mdurl';
@@ -16,15 +16,22 @@ const textPropTypes = Text.propTypes || {}
 const { OS } = Platform
 
 class Hyperlink extends Component {
-  constructor(props){
-    super(props)
-    this.linkify = this.linkify.bind(this)
-    this.parse = this.parse.bind(this)
-    this.linkifyIt = props.linkify || require('linkify-it')()
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.linkify !== prevState.linkifyIt) {
+      return {
+        linkifyIt: nextProps.linkify
+      };
+    }
+
+    return null;
   }
 
-  componentWillReceiveProps ({ linkify = require('linkify-it')() } = {}) {
-    this.linkifyIt = linkify
+  constructor(props){
+    super(props)
+
+    this.state = {
+      linkifyIt: props.linkify || require('linkify-it')()
+    };
   }
 
   render() {
@@ -33,7 +40,7 @@ class Hyperlink extends Component {
     delete viewProps.linkDefault
     delete viewProps.onLongPress
     delete viewProps.linkStyle
-		
+
     return (
       <View { ...viewProps } style={ this.props.style }>
         { !this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
@@ -44,18 +51,18 @@ class Hyperlink extends Component {
   }
 
   isTextNested(component) {
-    if (!React.isValidElement(component)) 
+    if (!React.isValidElement(component))
       throw new Error('Invalid component')
     let { type: { displayName } = {} } = component
-    if (displayName !== 'Text') 
+    if (displayName !== 'Text')
       throw new Error('Not a Text component')
     return typeof component.props.children !== 'string'
   }
 
-  linkify(component){
+  linkify = (component) => {
     if (
-      !this.linkifyIt.pretest(component.props.children)
-      || !this.linkifyIt.test(component.props.children)
+      !this.state.linkifyIt.pretest(component.props.children)
+      || !this.state.linkifyIt.test(component.props.children)
     )
       return component
 
@@ -69,7 +76,7 @@ class Hyperlink extends Component {
     }
 
     try {
-      this.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
+      this.state.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
         let nonLinkedText = component.props.children.substring(_lastIndex, index)
         nonLinkedText && elements.push(nonLinkedText)
         _lastIndex = lastIndex
@@ -80,7 +87,7 @@ class Hyperlink extends Component {
 
         const clickHandlerProps = {}
         if (OS !== 'web') {
-          clickHandlerProps.onLongPress = this.props.onLongPress 
+          clickHandlerProps.onLongPress = this.props.onLongPress
             ? () => this.props.onLongPress(url, text)
             : undefined
         }
@@ -106,7 +113,7 @@ class Hyperlink extends Component {
     }
   }
 
-  parse (component) {
+  parse = (component) => {
     let {
         props: { children } = {},
         type: { displayName } = {},
@@ -122,7 +129,7 @@ class Hyperlink extends Component {
 
     return React.cloneElement(component, componentProps, React.Children.map(children, child => {
       let { type : { displayName } = {} } = child || {}
-      if (typeof child === 'string' && this.linkifyIt.pretest(child))
+      if (typeof child === 'string' && this.state.linkifyIt.pretest(child))
         return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
 		  if (displayName === 'Text' && !this.isTextNested(child))
 			  return this.linkify(child)
@@ -160,7 +167,7 @@ export default class extends Component {
 
   render () {
     const onPress = this.handleLink || this.props.onPress
-	if (this.props.linkDefault) 
+	if (this.props.linkDefault)
 		return <Hyperlink { ...this.props } onPress={ onPress }/>
     return <Hyperlink { ...this.props } />
   }
