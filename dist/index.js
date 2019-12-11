@@ -29,21 +29,23 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var linkify = require('linkify-it')();
 
 var textPropTypes = _reactNative.Text.propTypes || {};
 var OS = _reactNative.Platform.OS;
@@ -52,19 +54,6 @@ var Hyperlink =
 /*#__PURE__*/
 function (_Component) {
   _inherits(Hyperlink, _Component);
-
-  _createClass(Hyperlink, null, [{
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(nextProps, prevState) {
-      if (nextProps.linkify !== prevState.linkifyIt) {
-        return {
-          linkifyIt: nextProps.linkify
-        };
-      }
-
-      return null;
-    }
-  }]);
 
   function Hyperlink(props) {
     var _this;
@@ -122,10 +111,7 @@ function (_Component) {
           _ref2$props = _ref2.props;
 
       _ref2$props = _ref2$props === void 0 ? {} : _ref2$props;
-      var children = _ref2$props.children,
-          _ref2$type = _ref2.type;
-      _ref2$type = _ref2$type === void 0 ? {} : _ref2$type;
-      var displayName = _ref2$type.displayName;
+      var children = _ref2$props.children;
       if (!children) return component;
 
       var componentProps = _objectSpread({}, component.props, {
@@ -148,7 +134,7 @@ function (_Component) {
     });
 
     _this.state = {
-      linkifyIt: props.linkify || require('linkify-it')()
+      linkifyIt: props.linkify || linkify
     };
     return _this;
   }
@@ -188,6 +174,15 @@ Hyperlink.propTypes = {
   linkText: _propTypes["default"].oneOfType([_propTypes["default"].string, _propTypes["default"].func]),
   onPress: _propTypes["default"].func,
   onLongPress: _propTypes["default"].func
+};
+Hyperlink.defaultProps = {
+  linkify: linkify
+};
+
+Hyperlink.getDerivedStateFromProps = function (nextProps, prevState) {
+  return nextProps.linkify !== prevState.linkifyIt ? {
+    linkifyIt: nextProps.linkify
+  } : null;
 };
 
 var _default =
