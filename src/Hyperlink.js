@@ -12,26 +12,15 @@ import {
 } from 'react-native'
 import mdurl from 'mdurl'
 
+const linkify = require('linkify-it')()
+
 const textPropTypes = Text.propTypes || {}
 const { OS } = Platform
 
 class Hyperlink extends Component {
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.linkify !== prevState.linkifyIt) {
-      return {
-        linkifyIt: nextProps.linkify
-      };
-    }
-
-    return null
-  }
-
-  constructor(props){
+  constructor(props) {
     super(props)
-
-    this.state = {
-      linkifyIt: props.linkify || require('linkify-it')()
-    };
+    this.state = { linkifyIt: props.linkify || linkify }
   }
 
   render() {
@@ -114,10 +103,7 @@ class Hyperlink extends Component {
   }
 
   parse = component => {
-    let {
-        props: { children } = {},
-        type: { displayName } = {},
-    } = component || {}
+    let { props: { children } = {} } = component || {}
     if (!children)
       return component
 
@@ -150,6 +136,12 @@ Hyperlink.propTypes = {
   onLongPress: PropTypes.func,
 }
 
+Hyperlink.defaultProps = { linkify }
+
+Hyperlink.getDerivedStateFromProps = (nextProps, prevState) => (nextProps.linkify !== prevState.linkifyIt)
+    ? { linkifyIt: nextProps.linkify }
+    : null
+
 export default class extends Component {
   constructor (props) {
     super(props)
@@ -157,18 +149,18 @@ export default class extends Component {
   }
 
   handleLink (url) {
-    const urlObject = mdurl.parse(url);
-    urlObject.protocol = urlObject.protocol.toLowerCase();
+    const urlObject = mdurl.parse(url)
+    urlObject.protocol = urlObject.protocol.toLowerCase()
     const normalizedURL = mdurl.format(urlObject)
 
     Linking.canOpenURL(normalizedURL)
-      .then(supported => supported && Linking.openURL(normalizedURL));
+      .then(supported => supported && Linking.openURL(normalizedURL))
   }
 
   render () {
     const onPress = this.handleLink || this.props.onPress
-	if (this.props.linkDefault)
-		return <Hyperlink { ...this.props } onPress={ onPress }/>
+    if (this.props.linkDefault)
+      return <Hyperlink { ...this.props } onPress={ onPress }/>
     return <Hyperlink { ...this.props } />
   }
 }
