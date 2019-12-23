@@ -90,6 +90,7 @@ class Hyperlink extends Component {
             { ...clickHandlerProps }
             key={ url + index }
             style={ [ component.props.style, this.props.linkStyle ] }
+            { ...this.props.injectViewProps(url) }
           >
             { text }
           </Text>
@@ -134,9 +135,10 @@ Hyperlink.propTypes = {
   ]),
   onPress: PropTypes.func,
   onLongPress: PropTypes.func,
+  injectViewProps: PropTypes.func,
 }
 
-Hyperlink.defaultProps = { linkify }
+Hyperlink.defaultProps = { linkify, injectViewProps: i => ({}) }
 
 Hyperlink.getDerivedStateFromProps = (nextProps, prevState) => (nextProps.linkify !== prevState.linkifyIt)
     ? { linkifyIt: nextProps.linkify }
