@@ -16,9 +16,10 @@ npm i --save react-native-hyperlink
 | `linkify` | [linkify-it](http://markdown-it.github.io/linkify-it/doc/) object, for custom schema  | `object` | `require('linkify-it')()`
 | `linkStyle` | highlight clickable text with styles | `Text.propTypes.style` |
 | `linkText` | A string or a func to replace parsed text | `oneOfType([ string, func ])` |
-| `onPress` | func to handle click over a clickable text with parsed text as arg | `func` |
-| `onLongPress` | func to handle long click over a clickable text with parsed text as arg | `func` |
+| `onPress` | Func to handle click over a clickable text with parsed text as arg | `func` |
+| `onLongPress` | Func to handle long click over a clickable text with parsed text as arg | `func` |
 |`linkDefault`|A platform specific fallback to handle `onPress`. Uses [Linking](https://facebook.github.io/react-native/docs/linking.html). Disabled by default | `bool`
+|`injectViewProps`| Func with url as a param to inject props to the clickable component | `func` | `i => ({})`
 
 ## Examples
 Wrap any component that has `<Text>` (works for [nested ](https://facebook.github.io/react-native/docs/text.html#nested-text) text too) in it
@@ -71,6 +72,20 @@ export const parseAndReplace = () =>
     <Text style={ { fontSize: 15 } }>
       Make clickable strings cleaner with https://github.com/obipawan/hyperlink
     </Text>
+  </Hyperlink>
+
+export const passPropsText = () =>
+  <Hyperlink
+    linkDefault
+    injectViewProps={ url => ({
+          testID: url === 'http://link.com' ? 'id1' : 'id2' ,
+          style: url === 'https://link.com' ? { color: 'red' } : { color: 'blue' },
+          //any other props you wish to pass to the component
+    }) }
+  >
+    <Text>You can pass props to clickable components matched by url.
+        <Text>This url looks red https://link.com
+    </Text> and this url looks blue https://link2.com </Text>
   </Hyperlink>
 ```
 
