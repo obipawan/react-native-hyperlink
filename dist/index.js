@@ -96,7 +96,7 @@ function (_Component) {
           elements.push(_react["default"].createElement(_reactNative.Text, _extends({}, componentProps, clickHandlerProps, {
             key: url + index,
             style: [component.props.style, _this.props.linkStyle]
-          }), text));
+          }, _this.props.injectViewProps(url)), text));
         });
 
         elements.push(component.props.children.substring(_lastIndex, component.props.children.length));
@@ -173,10 +173,14 @@ Hyperlink.propTypes = {
   linkStyle: textPropTypes.style,
   linkText: _propTypes["default"].oneOfType([_propTypes["default"].string, _propTypes["default"].func]),
   onPress: _propTypes["default"].func,
-  onLongPress: _propTypes["default"].func
+  onLongPress: _propTypes["default"].func,
+  injectViewProps: _propTypes["default"].func
 };
 Hyperlink.defaultProps = {
-  linkify: linkify
+  linkify: linkify,
+  injectViewProps: function injectViewProps(i) {
+    return {};
+  }
 };
 
 Hyperlink.getDerivedStateFromProps = function (nextProps, prevState) {
