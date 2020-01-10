@@ -10,21 +10,17 @@ import {
 	Linking,
 	Platform
 } from 'react-native'
-import mdurl from 'mdurl';
+import mdurl from 'mdurl'
+
+const linkify = require('linkify-it')()
 
 const textPropTypes = Text.propTypes || {}
 const { OS } = Platform
 
 class Hyperlink extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.linkify = this.linkify.bind(this)
-    this.parse = this.parse.bind(this)
-    this.linkifyIt = props.linkify || require('linkify-it')()
-  }
-
-  componentWillReceiveProps ({ linkify = require('linkify-it')() } = {}) {
-    this.linkifyIt = linkify
+    this.state = { linkifyIt: props.linkify || linkify }
   }
 
   render() {
@@ -36,7 +32,6 @@ class Hyperlink extends Component {
     delete wrapperProps.wrapperComponent
 
     const Wrapper = this.props.wrapperComponent || View;
-
     return (
       <Wrapper { ...wrapperProps } style={ this.props.style }>
         { !this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
@@ -55,10 +50,10 @@ class Hyperlink extends Component {
     return typeof component.props.children !== 'string'
   }
 
-  linkify(component){
+  linkify = component => {
     if (
-      !this.linkifyIt.pretest(component.props.children)
-      || !this.linkifyIt.test(component.props.children)
+      !this.state.linkifyIt.pretest(component.props.children)
+      || !this.state.linkifyIt.test(component.props.children)
     )
       return component
 
@@ -72,7 +67,7 @@ class Hyperlink extends Component {
     }
 
     try {
-      this.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
+      this.state.linkifyIt.match(component.props.children).forEach(({ index, lastIndex, text, url }) => {
         let nonLinkedText = component.props.children.substring(_lastIndex, index)
         nonLinkedText && elements.push(nonLinkedText)
         _lastIndex = lastIndex
@@ -97,6 +92,7 @@ class Hyperlink extends Component {
             { ...clickHandlerProps }
             key={ url + index }
             style={ [ component.props.style, this.props.linkStyle ] }
+            { ...this.props.injectViewProps(url) }
           >
             { text }
           </Text>
@@ -109,11 +105,8 @@ class Hyperlink extends Component {
     }
   }
 
-  parse (component) {
-    let {
-        props: { children } = {},
-        type: { displayName } = {},
-    } = component || {}
+  parse = component => {
+    let { props: { children } = {} } = component || {}
     if (!children)
       return component
 
@@ -125,7 +118,7 @@ class Hyperlink extends Component {
 
     return React.cloneElement(component, componentProps, React.Children.map(children, child => {
       let { type : { displayName } = {} } = child || {}
-      if (typeof child === 'string' && this.linkifyIt.pretest(child))
+      if (typeof child === 'string' && this.state.linkifyIt.pretest(child))
         return this.linkify(<Text { ...componentProps } style={ component.props.style }>{ child }</Text>)
 		  if (displayName === 'Text' && !this.isTextNested(child))
 			  return this.linkify(child)
@@ -144,8 +137,15 @@ Hyperlink.propTypes = {
   ]),
   onPress: PropTypes.func,
   onLongPress: PropTypes.func,
+  injectViewProps: PropTypes.func,
   wrapperComponent: PropTypes.elementType,
 }
+
+Hyperlink.defaultProps = { linkify, injectViewProps: i => ({}) }
+
+Hyperlink.getDerivedStateFromProps = (nextProps, prevState) => (nextProps.linkify !== prevState.linkifyIt)
+    ? { linkifyIt: nextProps.linkify }
+    : null
 
 export default class extends Component {
   constructor (props) {
@@ -154,18 +154,18 @@ export default class extends Component {
   }
 
   handleLink (url) {
-    const urlObject = mdurl.parse(url);
-    urlObject.protocol = urlObject.protocol.toLowerCase();
+    const urlObject = mdurl.parse(url)
+    urlObject.protocol = urlObject.protocol.toLowerCase()
     const normalizedURL = mdurl.format(urlObject)
 
     Linking.canOpenURL(normalizedURL)
-      .then(supported => supported && Linking.openURL(normalizedURL));
+      .then(supported => supported && Linking.openURL(normalizedURL))
   }
 
   render () {
     const onPress = this.handleLink || this.props.onPress
-	if (this.props.linkDefault)
-		return <Hyperlink { ...this.props } onPress={ onPress }/>
+    if (this.props.linkDefault)
+      return <Hyperlink { ...this.props } onPress={ onPress }/>
     return <Hyperlink { ...this.props } />
   }
 }

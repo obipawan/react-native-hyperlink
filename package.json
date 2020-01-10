@@ -1,11 +1,11 @@
 {
   "name": "react-native-hyperlink",
-  "version": "0.0.16",
+  "version": "0.0.19",
   "description": "A <Hyperlink /> component for react-native to make urls, fuzzy links, emails etc clickable",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel --presets=es2015,react --plugins=transform-object-rest-spread src/Hyperlink.js --out-file dist/index.js",
+    "build": "babel --presets=@babel/preset-env,@babel/preset-react --plugins=@babel/plugin-proposal-object-rest-spread,@babel/plugin-proposal-class-properties src/Hyperlink.js --out-file dist/index.js",
     "prepare": "npm run build",
     "prepush": "npm run build",
     "precommit": "npm run build"
@@ -34,10 +34,12 @@
     "mdurl": "^1.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
     "husky": "^0.14.3"
   },
   "types": "index.d.ts"
