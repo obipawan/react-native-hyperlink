@@ -142,13 +142,15 @@ function (_Component) {
   _createClass(Hyperlink, [{
     key: "render",
     value: function render() {
-      var viewProps = _extends({}, this.props);
+      var wrapperProps = _extends({}, this.props);
 
-      delete viewProps.onPress;
-      delete viewProps.linkDefault;
-      delete viewProps.onLongPress;
-      delete viewProps.linkStyle;
-      return _react["default"].createElement(_reactNative.View, _extends({}, viewProps, {
+      delete wrapperProps.onPress;
+      delete wrapperProps.linkDefault;
+      delete wrapperProps.onLongPress;
+      delete wrapperProps.linkStyle;
+      delete wrapperProps.wrapperComponent;
+      var Wrapper = this.props.wrapperComponent || _reactNative.View;
+      return _react["default"].createElement(Wrapper, _extends({}, wrapperProps, {
         style: this.props.style
       }), !this.props.onPress && !this.props.onLongPress && !this.props.linkStyle ? this.props.children : this.parse(this).props.children);
     }
@@ -174,7 +176,8 @@ Hyperlink.propTypes = {
   linkText: _propTypes["default"].oneOfType([_propTypes["default"].string, _propTypes["default"].func]),
   onPress: _propTypes["default"].func,
   onLongPress: _propTypes["default"].func,
-  injectViewProps: _propTypes["default"].func
+  injectViewProps: _propTypes["default"].func,
+  wrapperComponent: _propTypes["default"].elementType
 };
 Hyperlink.defaultProps = {
   linkify: linkify,

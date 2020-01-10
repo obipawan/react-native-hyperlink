@@ -8,6 +8,7 @@ interface Props {
   linkText?: string | ((text: string) => string);
   onPress?: (url: string, text: string) => void;
   onLongPress?: (url: string, text: string) => void;
+  wrapperComponent?: Component;
 }
 
 declare class HyperLink extends Component<Props> {}

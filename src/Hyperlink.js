@@ -24,18 +24,20 @@ class Hyperlink extends Component {
   }
 
   render() {
-    const { ...viewProps } = this.props
-    delete viewProps.onPress
-    delete viewProps.linkDefault
-    delete viewProps.onLongPress
-    delete viewProps.linkStyle
+    const { ...wrapperProps } = this.props
+    delete wrapperProps.onPress
+    delete wrapperProps.linkDefault
+    delete wrapperProps.onLongPress
+    delete wrapperProps.linkStyle
+    delete wrapperProps.wrapperComponent
 
+    const Wrapper = this.props.wrapperComponent || View;
     return (
-      <View { ...viewProps } style={ this.props.style }>
+      <Wrapper { ...wrapperProps } style={ this.props.style }>
         { !this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
           ? this.props.children
           : this.parse(this).props.children }
-      </View>
+      </Wrapper>
     )
   }
 
@@ -136,6 +138,7 @@ Hyperlink.propTypes = {
   onPress: PropTypes.func,
   onLongPress: PropTypes.func,
   injectViewProps: PropTypes.func,
+  wrapperComponent: PropTypes.elementType,
 }
 
 Hyperlink.defaultProps = { linkify, injectViewProps: i => ({}) }
