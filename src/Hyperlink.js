@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { TextPropTypes } from 'deprecated-react-native-prop-types'
 import {
 	View,
 	Text,
@@ -14,7 +15,7 @@ import mdurl from 'mdurl'
 
 const linkify = require('linkify-it')()
 
-const textPropTypes = Text.propTypes || {}
+const textPropTypes = TextPropTypes || {}
 const { OS } = Platform
 
 class Hyperlink extends Component {
