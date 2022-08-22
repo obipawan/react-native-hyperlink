@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { Hyperlink } from 'react-native-hyperlink';
+import Hyperlink from 'react-native-hyperlink';
 
 const examples = [
 	<Hyperlink linkDefault={true}>
