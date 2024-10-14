@@ -72,11 +72,9 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let elements = [];
 		let _lastIndex = 0;
 
-		const componentProps = {
-			...component.props,
-			ref: undefined,
-			key: undefined,
-		};
+		const componentProps = {...component.props};
+		delete componentProps.key;
+		delete componentProps.ref;
 
 		try {
 			this.state.linkifyIt
