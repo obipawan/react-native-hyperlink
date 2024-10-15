@@ -72,7 +72,9 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let elements = [];
 		let _lastIndex = 0;
 
-		const componentProps = {...component.props};
+		const componentProps = {
+			...component.props,
+		};
 		delete componentProps.key;
 		delete componentProps.ref;
 
@@ -135,9 +137,9 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 
 		const componentProps = {
 			...component.props,
-			ref: undefined,
-			key: undefined,
 		};
+		delete componentProps.key;
+		delete componentProps.ref;
 
 		return React.cloneElement(
 			component,
