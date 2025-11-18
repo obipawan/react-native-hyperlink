@@ -661,4 +661,27 @@ describe('Hyperlink', () => {
 			testSpy.mockRestore();
 		});
 	});
+
+	it('does not warn when passing `key` prop to outer component', () => {
+		const consoleError = jest
+			.spyOn(console, 'error')
+			.mockImplementation(() => {});
+		// Render with a key passed to the outer Hyperlink component
+		render(
+			<View key='outer-key'>
+				<Hyperlink linkDefault>
+					<Text>Visit http://example.com</Text>
+				</Hyperlink>
+				,
+			</View>,
+		);
+
+		const calls = (consoleError.mock.calls || []).map(c => String(c[0] || ''));
+		const found = calls.some(msg =>
+			/props object containing a "key" prop is being spread into JSX/.test(msg),
+		);
+		expect(found).toBe(false);
+
+		consoleError.mockRestore();
+	});
 });

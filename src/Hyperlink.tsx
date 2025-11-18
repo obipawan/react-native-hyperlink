@@ -32,7 +32,9 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 	}
 
 	render() {
-		const { ...viewProps } = this.props;
+		// Avoid spreading React special props such as `key` or `ref`
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { key: _key, ref: _ref, ...viewProps } = this.props as any;
 
 		// If no link handlers or styles, just render children as-is
 		if (
@@ -96,6 +98,8 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 
 		// Create component props (ref and key are React-specific and not in TextProps)
 		const componentProps = component.props as TextProps;
+		delete (componentProps as { ref?: unknown }).ref;
+		delete (componentProps as { key?: unknown }).key;
 
 		try {
 			this.state.linkifyIt
@@ -157,11 +161,9 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let { props: { children } = { children: undefined } } = component || {};
 		if (!children) return component;
 
-		const componentProps = {
-			...component.props,
-			ref: undefined,
-			key: undefined,
-		};
+		const componentProps = component.props as TextProps;
+		delete (componentProps as { ref?: unknown }).ref;
+		delete (componentProps as { key?: unknown }).key;
 
 		return React.cloneElement(
 			component,
@@ -214,13 +216,17 @@ export default class extends Component<HyperlinkProps> {
 
 	render() {
 		const onPress = this.props.onPress ?? this.handleLink;
+		// Do not forward `key`/`ref` to the inner `Hyperlink` to avoid
+		// React warning about spreading a props object that contains `key`.
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { key: _key, ref: _ref, ...rest } = this.props as any;
 		return this.props.linkDefault ? (
 			<Hyperlink
-				{...this.props}
+				{...rest}
 				onPress={onPress}
 			/>
 		) : (
-			<Hyperlink {...this.props} />
+			<Hyperlink {...rest} />
 		);
 	}
 }
