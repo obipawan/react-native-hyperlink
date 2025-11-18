@@ -1,29 +1,25 @@
 {
-	"name": "react-native-hyperlink-example",
-	"description": "Example app for react-native-hyperlink",
-	"version": "0.0.1",
-	"private": true,
-	"main": "index",
-	"scripts": {
-		"android": "expo start --android",
-		"ios": "expo start --ios",
-		"web": "expo start --web",
-		"start": "expo start"
-	},
-	"dependencies": {
-		"expo": "^46.0.0",
-		"expo-splash-screen": "~0.16.1",
-		"react": "18.0.0",
-		"react-dom": "18.0.0",
-		"react-native": "0.69.4",
-		"react-native-web": "~0.18.7"
-	},
-	"devDependencies": {
-		"@babel/core": "^7.18.6",
-		"@babel/runtime": "^7.9.6",
-		"babel-loader": "^8.2.5",
-		"babel-plugin-module-resolver": "^4.0.0",
-		"babel-preset-expo": "~9.2.0",
-		"expo-cli": "^6.0.0 "
-	}
+  "name": "react-native-hyperlink-example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~6.1.2",
+    "expo": "~54.0.23",
+    "expo-status-bar": "~3.0.8",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-web": "~0.21.0"
+  },
+  "private": true,
+  "devDependencies": {
+    "react-native-builder-bob": "^0.40.13",
+    "react-native-monorepo-config": "^0.1.9"
+  }
 }

@@ -1,23 +1,31 @@
 {
-  "name": "react-native-hyperlink-example",
-  "displayName": "Hyperlink Example",
   "expo": {
-    "name": "react-native-hyperlink-example",
-    "slug": "react-native-hyperlink-example",
-    "description": "Example app for react-native-hyperlink",
-    "privacy": "public",
+    "name": "example",
+    "slug": "example",
     "version": "1.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "ios": {
-      "supportsTablet": true
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
-    "jsEngine": "hermes",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "hyperlink.example"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "hyperlink.example"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
   }
 }

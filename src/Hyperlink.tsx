@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Linking, Platform } from 'react-native';
-import mdurl from 'mdurl';
+import { View, Text, Linking, Platform, type TextProps } from 'react-native';
+import { parse, format } from 'mdurl';
 import type {
 	HyperlinkProps,
 	HyperlinkState,
@@ -32,25 +32,40 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 	}
 
 	render() {
-		const {
-			onPress,
-			linkDefault,
-			onLongPress,
-			linkStyle,
-			linkify,
-			linkText,
-			...viewProps
-		} = this.props;
+		const { ...viewProps } = this.props;
+
+		// If no link handlers or styles, just render children as-is
+		if (
+			!this.props.onPress &&
+			!this.props.onLongPress &&
+			!this.props.linkStyle
+		) {
+			return (
+				<View
+					{...viewProps}
+					style={this.props.style}
+				>
+					{this.props.children}
+				</View>
+			);
+		}
+
+		// Otherwise, parse and linkify the children
+		const wrapperElement = (
+			<View
+				{...viewProps}
+				style={this.props.style}
+			>
+				{this.props.children}
+			</View>
+		) as ReactElementWithType;
 
 		return (
 			<View
 				{...viewProps}
 				style={this.props.style}
 			>
-				{!this.props.onPress && !this.props.onLongPress && !this.props.linkStyle
-					? this.props.children
-					: //@ts-ignore
-					  this.parse(this).props.children}
+				{this.parse(wrapperElement).props.children}
 			</View>
 		);
 	}
@@ -62,30 +77,31 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		return typeof component.props.children !== 'string';
 	}
 
-	linkify = (component: ReactElementWithType) => {
+	linkify = (component: ReactElementWithType): ReactElementWithType => {
+		// Type guard: ensure children is a string
+		if (typeof component.props.children !== 'string') {
+			return component;
+		}
+
+		const childrenString = component.props.children;
+
 		if (
-			!this.state.linkifyIt.pretest(component.props.children) ||
-			!this.state.linkifyIt.test(component.props.children)
+			!this.state.linkifyIt.pretest(childrenString) ||
+			!this.state.linkifyIt.test(childrenString)
 		)
 			return component;
 
-		let elements = [];
+		let elements: Array<string | React.ReactElement> = [];
 		let _lastIndex = 0;
 
-		const componentProps = {
-			...component.props,
-			ref: undefined,
-			key: undefined,
-		};
+		// Create component props (ref and key are React-specific and not in TextProps)
+		const componentProps = component.props as TextProps;
 
 		try {
 			this.state.linkifyIt
-				.match(component.props.children)
+				.match(childrenString)
 				?.forEach(({ index, lastIndex, text, url }) => {
-					let nonLinkedText = component.props.children.substring(
-						_lastIndex,
-						index,
-					);
+					let nonLinkedText = childrenString.substring(_lastIndex, index);
 					nonLinkedText && elements.push(nonLinkedText);
 					_lastIndex = lastIndex;
 					if (this.props.linkText)
@@ -94,9 +110,10 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 								? this.props.linkText(url)
 								: this.props.linkText;
 
+					// Create handlers that match Text component's event handler signature
 					const clickHandlerProps: {
-						onPress?: HyperlinkProps['onPress'];
-						onLongPress?: HyperlinkProps['onLongPress'];
+						onPress?: (event: any) => void;
+						onLongPress?: (event: any) => void;
 					} = {};
 					if (OS !== 'web') {
 						clickHandlerProps.onLongPress = this.props.onLongPress
@@ -107,9 +124,17 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 						? () => this.props.onPress?.(url, text)
 						: undefined;
 
+					// Only spread safe Text props, excluding conflicting ones
+					// We'll override children, onPress, onLongPress, and style below
+					const safeProps = { ...componentProps };
+					delete (safeProps as { children?: unknown }).children;
+					delete (safeProps as { onPress?: unknown }).onPress;
+					delete (safeProps as { onLongPress?: unknown }).onLongPress;
+					delete (safeProps as { style?: unknown }).style;
+
 					elements.push(
 						<Text
-							{...componentProps}
+							{...safeProps}
 							{...clickHandlerProps}
 							key={url + index}
 							style={[component.props.style, this.props.linkStyle]}
@@ -120,10 +145,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 					);
 				});
 			elements.push(
-				component.props.children.substring(
-					_lastIndex,
-					component.props.children.length,
-				),
+				childrenString.substring(_lastIndex, childrenString.length),
 			);
 			return React.cloneElement(component, componentProps, elements);
 		} catch (err) {
@@ -144,21 +166,31 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		return React.cloneElement(
 			component,
 			componentProps,
-			React.Children.map(children, (child: ReactElementWithType) => {
-				let { type: { displayName } = { displayName: undefined } } =
-					child || {};
-				if (typeof child === 'string' && this.state.linkifyIt.pretest(child))
+			React.Children.map(children, child => {
+				// Handle string children
+				if (typeof child === 'string' && this.state.linkifyIt.pretest(child)) {
+					// Create a new Text element with only the style prop from parent
 					return this.linkify(
-						<Text
-							{...componentProps}
-							style={component.props.style}
-						>
-							{child}
-						</Text>,
+						(
+							<Text style={component.props.style}>{child}</Text>
+						) as ReactElementWithType,
 					);
-				if (displayName === 'Text' && !this.isTextNested(child))
-					return this.linkify(child);
-				return this.parse(child);
+				}
+
+				// Handle React elements
+				if (React.isValidElement(child)) {
+					let { type: { displayName } = { displayName: undefined } } =
+						child as ReactElementWithType;
+					if (
+						displayName === 'Text' &&
+						!this.isTextNested(child as ReactElementWithType)
+					) {
+						return this.linkify(child as ReactElementWithType);
+					}
+					return this.parse(child as ReactElementWithType);
+				}
+
+				return child;
 			}),
 		);
 	};
@@ -171,17 +203,17 @@ export default class extends Component<HyperlinkProps> {
 	}
 
 	handleLink(url: string) {
-		const urlObject = mdurl.parse(url);
+		const urlObject = parse(url);
 		urlObject.protocol = urlObject.protocol.toLowerCase();
-		const normalizedURL = mdurl.format(urlObject);
+		const normalizedURL = format(urlObject);
 
-		Linking.canOpenURL(normalizedURL).then(
-			supported => supported && Linking.openURL(normalizedURL),
-		);
+		Linking.canOpenURL(normalizedURL).then((supported: boolean) => {
+			supported && Linking.openURL(normalizedURL);
+		});
 	}
 
 	render() {
-		const onPress = this.handleLink || this.props.onPress;
+		const onPress = this.props.onPress ?? this.handleLink;
 		return this.props.linkDefault ? (
 			<Hyperlink
 				{...this.props}
