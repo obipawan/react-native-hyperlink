@@ -96,10 +96,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let elements: Array<string | React.ReactElement> = [];
 		let _lastIndex = 0;
 
-		// Create component props (ref and key are React-specific and not in TextProps)
-		const componentProps = component.props as TextProps;
-		delete (componentProps as { ref?: unknown }).ref;
-		delete (componentProps as { key?: unknown }).key;
+		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
 
 		try {
 			this.state.linkifyIt
@@ -161,9 +158,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let { props: { children } = { children: undefined } } = component || {};
 		if (!children) return component;
 
-		const componentProps = component.props as TextProps;
-		delete (componentProps as { ref?: unknown }).ref;
-		delete (componentProps as { key?: unknown }).key;
+		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
 
 		return React.cloneElement(
 			component,
