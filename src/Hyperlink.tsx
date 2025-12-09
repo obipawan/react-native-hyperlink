@@ -96,6 +96,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let elements: Array<string | React.ReactElement> = [];
 		let _lastIndex = 0;
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
 
 		try {
@@ -127,7 +128,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 
 					// Only spread safe Text props, excluding conflicting ones
 					// We'll override children, onPress, onLongPress, and style below
-					const safeProps = { ...componentProps };
+					const safeProps = { ...componentProps } as TextProps;
 					delete (safeProps as { children?: unknown }).children;
 					delete (safeProps as { onPress?: unknown }).onPress;
 					delete (safeProps as { onLongPress?: unknown }).onLongPress;
@@ -158,6 +159,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let { props: { children } = { children: undefined } } = component || {};
 		if (!children) return component;
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
 
 		return React.cloneElement(
