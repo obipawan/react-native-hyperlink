@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Text, View, Linking, Platform } from 'react-native';
 import Hyperlink from '../index';
 
@@ -659,6 +659,42 @@ describe('Hyperlink', () => {
 
 			pretestSpy.mockRestore();
 			testSpy.mockRestore();
+		});
+	});
+
+	describe('errors', () => {
+		// mdurl.parse returns protocol as null for url like this
+		const url = '//example.com';
+
+		it('should handle invalid link gracefully', () => {
+			expect(() => {
+				const { getByText } = render(
+					<Hyperlink linkDefault>
+						<Text>Visit our site at {url}</Text>
+					</Hyperlink>,
+				);
+				fireEvent.press(getByText(url));
+			}).not.toThrow();
+		});
+
+		it('should handle openURL fail gracefully and pass error', async () => {
+			const mockError = new Error('Failed to open');
+			const mockOnError = jest.fn();
+			jest.spyOn(Linking, 'openURL').mockRejectedValueOnce(mockError);
+
+			const { getByText } = render(
+				<Hyperlink
+					linkDefault
+					onLinkError={mockOnError}
+				>
+					<Text>Visit our site at {url}</Text>
+				</Hyperlink>,
+			);
+			fireEvent.press(getByText(url));
+
+			await waitFor(() => {
+				expect(mockOnError).toHaveBeenCalledWith(mockError);
+			});
 		});
 	});
 

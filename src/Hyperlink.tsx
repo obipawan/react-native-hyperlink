@@ -203,11 +203,14 @@ export default class extends Component<HyperlinkProps> {
 
 	handleLink(url: string) {
 		const urlObject = parse(url);
-		urlObject.protocol = urlObject.protocol.toLowerCase();
+		urlObject.protocol = urlObject.protocol?.toLowerCase() ?? '';
 		const normalizedURL = format(urlObject);
 
 		Linking.canOpenURL(normalizedURL).then((supported: boolean) => {
-			supported && Linking.openURL(normalizedURL);
+			if (!supported) return;
+			Linking.openURL(normalizedURL).catch(error => {
+				if (this.props.onLinkError) this.props.onLinkError(error);
+			});
 		});
 	}
 

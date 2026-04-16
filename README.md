@@ -18,6 +18,7 @@ npm i --save react-native-hyperlink
 | `linkText` | A string or a func to replace parsed text | `oneOfType([ string, func ])` |
 | `onPress` | Func to handle click over a clickable text with parsed text as arg | `func` |
 | `onLongPress` | Func to handle long click over a clickable text with parsed text as arg | `func` |
+| `onLinkError` | Func to handle errors when `Linking.openURL` fails (used with `linkDefault`) | `func` |
 |`linkDefault`|A platform specific fallback to handle `onPress`. Uses [Linking](https://facebook.github.io/react-native/docs/linking.html). Disabled by default | `bool`
 |`injectViewProps`| Func with url as a param to inject props to the clickable component | `func` | `i => ({})`
 
