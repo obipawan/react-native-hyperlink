@@ -27,6 +27,7 @@ export type HyperlinkProps = {
 	linkText?: ((url: string) => string) | string;
 	onPress?: (url: string, text?: string) => void;
 	onLongPress?: (url: string, text?: string) => void;
+	onLinkError?: (error: unknown) => void;
 	injectViewProps?: (url: string) => TextProps;
 	style?: ViewProps['style'];
 	children?: ReactElementWithType;
