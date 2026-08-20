@@ -11,6 +11,17 @@ const linkify = require('linkify-it')();
 
 const { OS } = Platform;
 
+/**
+ * Copies `props` without React's special `ref` prop. `key` (and `ref` on React
+ * 18) is a non-enumerable warning getter that a spread skips but destructuring
+ * would read, and element props are frozen, so they cannot be deleted in place.
+ */
+const propsWithoutRef = <T extends object>(props: T): T => {
+	const rest: T & { ref?: unknown } = { ...props };
+	delete rest.ref;
+	return rest;
+};
+
 class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 	public static defaultProps: Partial<HyperlinkProps> = {
 		linkify,
@@ -32,9 +43,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 	}
 
 	render() {
-		// Avoid spreading React special props such as `key` or `ref`
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { key: _key, ref: _ref, ...viewProps } = this.props as any;
+		const viewProps: any = propsWithoutRef(this.props);
 
 		// If no link handlers or styles, just render children as-is
 		if (
@@ -96,8 +105,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let elements: Array<string | React.ReactElement> = [];
 		let _lastIndex = 0;
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
+		const componentProps = propsWithoutRef(component.props || {});
 
 		try {
 			this.state.linkifyIt
@@ -159,8 +167,7 @@ class Hyperlink extends Component<HyperlinkProps, HyperlinkState> {
 		let { props: { children } = { children: undefined } } = component || {};
 		if (!children) return component;
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { ref: _ref, key: _key, ...componentProps } = component.props || {};
+		const componentProps = propsWithoutRef(component.props || {});
 
 		return React.cloneElement(
 			component,
@@ -213,10 +220,7 @@ export default class extends Component<HyperlinkProps> {
 
 	render() {
 		const onPress = this.props.onPress ?? this.handleLink;
-		// Do not forward `key`/`ref` to the inner `Hyperlink` to avoid
-		// React warning about spreading a props object that contains `key`.
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { key: _key, ref: _ref, ...rest } = this.props as any;
+		const rest: any = propsWithoutRef(this.props);
 		return this.props.linkDefault ? (
 			<Hyperlink
 				{...rest}
